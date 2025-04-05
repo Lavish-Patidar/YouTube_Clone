@@ -8,7 +8,7 @@ This project is designed for learning purposes, providing a platform to explore 
 
 1. Clone the repository:
    ```bash
-   git clone
+   git clone https://github.com/Lavish-Patidar/YouTube_Clone.git
    ```
 2. Navigate to the backend directory and install dependencies:
    ```bash

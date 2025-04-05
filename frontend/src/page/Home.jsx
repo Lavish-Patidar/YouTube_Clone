@@ -1,4 +1,4 @@
- // frontend/src/page/Home.jsx
+// frontend/src/page/Home.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -33,7 +33,7 @@ function Home() {
 
     const fetchTags = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/tags/getTags");
+        const response = await axios.get("https://you-tube-clone-api-rho.vercel.app/api/v1/tags/getTags");
         const data = response.data.data;
         setTags(shuffleArray(data)); // Shuffle the tags before setting them
         setTimeout(updateScrollButtons, 50);
@@ -119,11 +119,10 @@ function Home() {
           {tags.map((tag) => (
             <button
               key={tag._id}
-              className={`tag-button py-1 px-2 rounded-lg border ${
-                selectedTag === tag.name
+              className={`tag-button py-1 px-2 rounded-lg border ${selectedTag === tag.name
                   ? "bg-black text-white"
                   : "bg-gray-200 text-sm text-black font-semibold hover:bg-gray-300"
-              }`}
+                }`}
               onClick={() => handleTagClick(tag.name)}
             >
               {tag.name}

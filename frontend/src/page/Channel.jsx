@@ -1,35 +1,35 @@
 // frontend/src/page/Channel.jsx
-import React, { useEffect, useState } from 'react';  
-import { useSelector, useDispatch } from 'react-redux';  
-import { useParams, Link } from 'react-router-dom';  
-import axios from 'axios';  
-import { subscribeChannel, unsubscribeChannel } from '../Redux/slice/channelSlice'; 
-import { fetchAllUserVideos } from '../Redux/slice/videoSlice';  
-import { useToast } from '../hooks/use-toast';  
-import FormatDate from '../components/FormatDate';  
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
+import { subscribeChannel, unsubscribeChannel } from '../Redux/slice/channelSlice';
+import { fetchAllUserVideos } from '../Redux/slice/videoSlice';
+import { useToast } from '../hooks/use-toast';
+import FormatDate from '../components/FormatDate';
 
 const Channel = () => {
-    const { id } = useParams();  
-    const [channelData, setChannelData] = useState(null);  
-    const [loading, setLoading] = useState(true);  
-    const { toast } = useToast();  
-    const dispatch = useDispatch();  
-    const authStatus = useSelector((state) => state.auth.status);  
-    const userId = useSelector((state) => state.auth.user?._id);  
-    const [isSubscribed, setIsSubscribed] = useState(false);  
-    const [videos, setVideos] = useState([]);  
-    
+    const { id } = useParams();
+    const [channelData, setChannelData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const { toast } = useToast();
+    const dispatch = useDispatch();
+    const authStatus = useSelector((state) => state.auth.status);
+    const userId = useSelector((state) => state.auth.user?._id);
+    const [isSubscribed, setIsSubscribed] = useState(false);
+    const [videos, setVideos] = useState([]);
+
     // Effect hook to fetch channel data based on the channel ID from URL params
     useEffect(() => {
         const fetchChannelData = async () => {
             try {
                 // Make a request to fetch channel data
-                const response = await axios.get(`http://localhost:8000/api/v1/channel/data/${id}`);
+                const response = await axios.get(`https://you-tube-clone-api-rho.vercel.app/api/v1/channel/data/${id}`);
                 if (response.data.message === "Channel fetched successfully") {
                     setChannelData(response.data.data);  // Set channel data if successful
                 }
             } catch (error) {
-                console.error("Error fetching channel data:", error);  
+                console.error("Error fetching channel data:", error);
             } finally {
                 setLoading(false);  // Set loading state to false after the data is fetched
             }
