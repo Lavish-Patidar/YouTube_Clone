@@ -1,14 +1,18 @@
-
 {
-    "compilerOptions": {
-      // ...
-      "baseUrl": ".",
-      "paths": {
-        "@/*": [
-          "./src/*"
-        ]
-      }
-      // ...
-    }
-  }
-  
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "es5",
+    "module": "esnext",
+    "jsx": "preserve",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
