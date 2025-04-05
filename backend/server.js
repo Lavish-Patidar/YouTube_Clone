@@ -29,8 +29,10 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: 'https://you-tube-clone-sepia.vercel.app',
+    origin: ['https://you-tube-clone-sepia.vercel.app', 'https://you-tube-clone-api-rho.vercel.app'],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
