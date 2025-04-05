@@ -6,7 +6,7 @@ import Routing from './routes/Routing';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from './Redux/store';
 import './index.css';
-import { Toaster } from "./components/ui/toaster.jsx"; 
+import { Toaster } from "./components/ui/toaster.jsx";
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -19,5 +19,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       {/* Toaster component renders UI notifications (e.g., success/error messages) */}
       <Toaster />
     </PersistGate>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
