@@ -17,10 +17,10 @@ const initialState = {
   Makes a POST request to the signup API endpoint 
 */
 export const register = createAsyncThunk(
-    '/api/v1/account/signup',
+    '/api/account/signup',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('/api/v1/account/signup', userData);
+            const response = await axios.post('/api/account/signup', userData);
             return response.data.data; // Return user data on success
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -33,10 +33,10 @@ export const register = createAsyncThunk(
   Makes a POST request to the login API endpoint 
 */
 export const login = createAsyncThunk(
-    '/api/v1/account/login',
+    '/api/account/login',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('/api/v1/account/login', userData);
+            const response = await axios.post('/api/account/login', userData);
             return response.data.data; // Return user data and access token on success
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -49,10 +49,10 @@ export const login = createAsyncThunk(
   Makes a POST request to the logout API endpoint
 */
 export const logout = createAsyncThunk(
-    '/api/v1/account/logout',
+    '/api/account/logout',
     async (_, { rejectWithValue }) => {
         try {
-            await axios.post('/api/v1/account/logout');
+            await axios.post('/api/account/logout');
             return true; // Successful logout returns true
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -65,10 +65,10 @@ export const logout = createAsyncThunk(
   Makes a GET request to fetch the user details
 */
 export const getUserData = createAsyncThunk(
-    '/api/v1/account/getUserData',
+    '/api/account/getUserData',
     async (userId, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`/api/v1/account/userData/${userId}`);
+            const response = await axios.get(`/api/account/userData/${userId}`);
             return response.data.data; // Return the user data
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -81,10 +81,10 @@ export const getUserData = createAsyncThunk(
   Makes a DELETE request to delete the user based on user ID 
 */
 export const deleteAccount = createAsyncThunk(
-    '/api/v1/account/deleteAccount',
+    '/api/account/deleteAccount',
     async (userId, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`/api/v1/account/delete/${userId}`);
+            const response = await axios.delete(`/api/account/delete/${userId}`);
             return response.data.message; // Return success message
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -97,10 +97,10 @@ export const deleteAccount = createAsyncThunk(
   Makes a PUT request to update user details 
 */
 export const updateAccount = createAsyncThunk(
-    '/api/v1/account/updateAccount',
+    '/api/account/updateAccount',
     async ({ userId, formData }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`/api/v1/account/update/${userId}`, formData, {
+            const response = await axios.put(`/api/account/update/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Required for file uploads
                 },
@@ -116,104 +116,104 @@ export const updateAccount = createAsyncThunk(
   Authentication slice for managing user authentication state
 */
 const authSlice = createSlice({
-    name: 'auth', 
-    initialState, 
-    reducers: {}, 
+    name: 'auth',
+    initialState,
+    reducers: {},
 
     // Extra reducers to handle async thunks
     extraReducers: (builder) => {
         // Register actions
         builder
             .addCase(register.pending, (state) => {
-                state.loading = true; 
-                state.error = null;   
+                state.loading = true;
+                state.error = null;
             })
             .addCase(register.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload.user;          
-                state.accessToken = action.payload.accessToken; 
-                state.hasChannel = action.payload.hasChannel;   
+                state.user = action.payload.user;
+                state.accessToken = action.payload.accessToken;
+                state.hasChannel = action.payload.hasChannel;
             })
             .addCase(register.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload; 
+                state.error = action.payload;
             });
 
         // Login actions
         builder
             .addCase(login.pending, (state) => {
-                state.loading = true; 
-                state.error = null;   
+                state.loading = true;
+                state.error = null;
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
-                state.status = true;  
-                state.user = action.payload.user;          
-                state.accessToken = action.payload.accessToken; 
-                state.hasChannel = action.payload.hasChannel;   
+                state.status = true;
+                state.user = action.payload.user;
+                state.accessToken = action.payload.accessToken;
+                state.hasChannel = action.payload.hasChannel;
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
-                state.status = false; 
-                state.error = action.payload; 
+                state.status = false;
+                state.error = action.payload;
             });
 
         // Logout actions
         builder
             .addCase(logout.fulfilled, (state) => {
-                state.status = false;    
-                state.user = null;       
-                state.accessToken = null; 
+                state.status = false;
+                state.user = null;
+                state.accessToken = null;
             })
             .addCase(logout.rejected, (state, action) => {
-                state.error = action.payload; 
+                state.error = action.payload;
             });
 
         // Fetch user data actions
         builder
             .addCase(getUserData.pending, (state) => {
-                state.loading = true; 
-                state.error = null;   
+                state.loading = true;
+                state.error = null;
             })
             .addCase(getUserData.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload; 
+                state.user = action.payload;
             })
             .addCase(getUserData.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload; 
+                state.error = action.payload;
             });
 
         // Delete account actions
         builder
             .addCase(deleteAccount.pending, (state) => {
-                state.loading = true; 
-                state.error = null;  
+                state.loading = true;
+                state.error = null;
             })
             .addCase(deleteAccount.fulfilled, (state) => {
                 state.loading = false;
-                state.user = null;        
-                state.accessToken = null; 
-                state.status = false;     
+                state.user = null;
+                state.accessToken = null;
+                state.status = false;
             })
             .addCase(deleteAccount.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload; 
+                state.error = action.payload;
             });
 
         // Update account actions
         builder
             .addCase(updateAccount.pending, (state) => {
-                state.loading = true; 
-                state.error = null;   
+                state.loading = true;
+                state.error = null;
             })
             .addCase(updateAccount.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload; 
+                state.user = action.payload;
             })
             .addCase(updateAccount.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload; 
+                state.error = action.payload;
             });
     },
 });
