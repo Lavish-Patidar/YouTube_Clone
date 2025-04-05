@@ -29,7 +29,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: 'http://localhost:5174',
+    origin: 'https://you-tube-clone-sepia.vercel.app',
     credentials: true,
 }));
 app.use(express.json({ limit: "16kb" }));
