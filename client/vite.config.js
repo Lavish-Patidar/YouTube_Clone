@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://you-tube-clone-api-rho.vercel.app',
+        target: 'https://youtube-clone-yl2d.onrender.com',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '')

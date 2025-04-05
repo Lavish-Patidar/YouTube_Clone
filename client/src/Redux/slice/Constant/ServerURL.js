@@ -1,2 +1,2 @@
-const BackendURL = 'https://you-tube-clone-api-rho.vercel.app';
+const BackendURL = 'https://youtube-clone-yl2d.onrender.com';
 export default BackendURL
