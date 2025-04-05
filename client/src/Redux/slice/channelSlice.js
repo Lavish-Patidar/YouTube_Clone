@@ -1,9 +1,6 @@
-// frontend/src/Redux/channelSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import BackendURL from "./Constant/ServerURL";
+import axiosInstance from "./axiosConfig";
 
-// **Initial State**: Defines the initial values for the channel slice
 const initialState = {
     channel: null,
     loading: false,
@@ -11,152 +8,98 @@ const initialState = {
     successMessage: null,
 };
 
-// **Async Thunks: Handles API calls for channel-related operations**
-
-/* 
-  1. Create a channel 
-  Sends a POST request with channel data to create a new channel.
-*/
 export const createChannel = createAsyncThunk(
     "channel/createChannel",
     async (channelData, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                throw new Error("No access token found");
-            }
-
-            const response = await axios.post(`${BackendURL}/api/channel/create`, channelData, {
+            const response = await axiosInstance.post('/api/channel/create', channelData, {
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                withCredentials: true
+                    "Content-Type": "application/json"
+                }
             });
-            return response.data.channel; // Return channel data on success
+            return response.data.channel;
         } catch (error) {
-            return rejectWithValue(error.response?.data?.error || "Failed to create channel"); // Handle error
+            return rejectWithValue(error.response?.data?.error || "Failed to create channel");
         }
     }
 );
 
-/* 
-  2. Fetch channel data by ID
-  Sends a GET request to fetch details of a specific channel.
-*/
 export const getChannel = createAsyncThunk(
     "channel/data",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${BackendURL}/api/channel/data/${channelId}`);
-            return response.data.data; // Return channel data on success
+            const response = await axiosInstance.get(`/api/channel/data/${channelId}`);
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.error || "Failed to fetch channel data");
         }
     }
 );
 
-/* 
-  3. Update a channel 
-  Sends a PUT request with updated data (e.g., title, description, or files).
-*/
 export const updateChannel = createAsyncThunk(
     "channel/updateChannel",
     async ({ channelId, formData }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`${BackendURL}/api/channel/update/${channelId}`, formData, {
+            const response = await axiosInstance.put(`/api/channel/update/${channelId}`, formData, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    "Content-Type": "multipart/form-data", // Required for file uploads
-                },
+                    "Content-Type": "multipart/form-data"
+                }
             });
-            return response.data.data; // Return updated channel data
+            return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.error || "Failed to update channel");
         }
     }
 );
 
-/* 
-  4. Delete a channel 
-  Sends a DELETE request to delete a specific channel by ID.
-*/
 export const deleteChannel = createAsyncThunk(
     "channel/delete",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`${BackendURL}/api/channel/delete/${channelId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
-            return response.data.message; // Return success message on successful deletion
+            const response = await axiosInstance.delete(`/api/channel/delete/${channelId}`);
+            return response.data.message;
         } catch (error) {
             return rejectWithValue(error.response?.data?.error || "Failed to delete channel");
         }
     }
 );
 
-/* 
-  5. Subscribe to a channel 
-  Sends a POST request to subscribe to a specific channel.
-*/
 export const subscribeChannel = createAsyncThunk(
     "channel/subscribe",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BackendURL}/api/channel/subscribe/${channelId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
-            return response.data.message; // Return success message
+            const response = await axiosInstance.post(`/api/channel/subscribe/${channelId}`);
+            return response.data.message;
         } catch (error) {
             return rejectWithValue(error.response?.data?.error || "Failed to subscribe channel");
         }
     }
 );
 
-/* 
-  6. Unsubscribe from a channel
-  Sends a POST request to unsubscribe from a specific channel.
-*/
 export const unsubscribeChannel = createAsyncThunk(
     "channel/unsubscribe",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BackendURL}/api/channel/unsubscribe/${channelId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
-            return response.data.message; // Return success message
+            const response = await axiosInstance.post(`/api/channel/unsubscribe/${channelId}`);
+            return response.data.message;
         } catch (error) {
             return rejectWithValue(error.response?.data?.error || "Failed to unsubscribe channel");
         }
     }
 );
 
-// **Slice Definition**
 const channelSlice = createSlice({
     name: "channel",
     initialState,
-
-    // **Synchronous Reducers**
     reducers: {
-        // Clears any existing error message in the state
         clearError(state) {
             state.error = null;
         },
-        // Clears any existing success message in the state
         clearSuccessMessage(state) {
             state.successMessage = null;
         },
     },
-
-    // **Extra Reducers: Handles async thunk states (pending, fulfilled, rejected)**
     extraReducers: (builder) => {
-        // Handle createChannel actions
         builder
             .addCase(createChannel.pending, (state) => {
                 state.loading = true;
@@ -165,31 +108,25 @@ const channelSlice = createSlice({
             })
             .addCase(createChannel.fulfilled, (state, action) => {
                 state.loading = false;
-                state.channel = action.payload; // Store newly created channel data
+                state.channel = action.payload;
                 state.successMessage = "Channel created successfully!";
             })
             .addCase(createChannel.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;   // Store error message
-            });
-
-        // Handle getChannel actions
-        builder
+                state.error = action.payload;
+            })
             .addCase(getChannel.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
             .addCase(getChannel.fulfilled, (state, action) => {
                 state.loading = false;
-                state.channel = action.payload; // Update channel data in the state
+                state.channel = action.payload;
             })
             .addCase(getChannel.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;   // Store error message
-            });
-
-        // Handle updateChannel actions
-        builder
+                state.error = action.payload;
+            })
             .addCase(updateChannel.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -197,16 +134,13 @@ const channelSlice = createSlice({
             })
             .addCase(updateChannel.fulfilled, (state, action) => {
                 state.loading = false;
-                state.channel = action.payload; // Update channel data
+                state.channel = action.payload;
                 state.successMessage = "Channel updated successfully!";
             })
             .addCase(updateChannel.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
-
-        // Handle deleteChannel actions
-        builder
+            })
             .addCase(deleteChannel.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -214,27 +148,21 @@ const channelSlice = createSlice({
             })
             .addCase(deleteChannel.fulfilled, (state) => {
                 state.loading = false;
-                state.channel = null; // Clear channel data after deletion
+                state.channel = null;
             })
             .addCase(deleteChannel.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
-
-        // Handle subscribeChannel actions
-        builder
+            })
             .addCase(subscribeChannel.fulfilled, (state) => {
-                state.loading = false; // No additional state changes required
+                state.loading = false;
             })
             .addCase(subscribeChannel.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
-
-        // Handle unsubscribeChannel actions
-        builder
+            })
             .addCase(unsubscribeChannel.fulfilled, (state) => {
-                state.loading = false; // No additional state changes required
+                state.loading = false;
             })
             .addCase(unsubscribeChannel.rejected, (state, action) => {
                 state.loading = false;
@@ -243,8 +171,5 @@ const channelSlice = createSlice({
     },
 });
 
-
 export const { clearError, clearSuccessMessage } = channelSlice.actions;
-
-
 export default channelSlice.reducer;

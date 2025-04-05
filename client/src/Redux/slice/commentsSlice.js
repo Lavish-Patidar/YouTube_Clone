@@ -1,13 +1,12 @@
 // frontend/src/Redux/slice/commentsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import BackendURL from './Constant/ServerURL';
+import axiosInstance from './axiosConfig';
 
 
 export const fetchCommentsByVideoId = createAsyncThunk(
   'comments/fetchCommentsByVideoId',
   async (videoId) => {
-    const response = await axios.get(`${BackendURL}/api/comments/video/${videoId}`);
+    const response = await axiosInstance.get(`/api/comments/video/${videoId}`);
     return response.data.data; // Return the fetched comments
   }
 );
@@ -19,7 +18,7 @@ export const fetchCommentsByVideoId = createAsyncThunk(
 export const addComment = createAsyncThunk(
   'comments/addComment',
   async ({ videoId, comment }) => {
-    const response = await axios.post(`${BackendURL}/api/comments/video/${videoId}`, { comment });
+    const response = await axiosInstance.post(`/api/comments/video/${videoId}`, { comment });
     return response.data.data; // Return the newly added comment
   }
 );
@@ -31,7 +30,7 @@ export const addComment = createAsyncThunk(
 export const deleteComment = createAsyncThunk(
   'comments/deleteComment',
   async ({ videoId, commentId }) => {
-    await axios.delete(`${BackendURL}/api/comments/${commentId}`);
+    await axiosInstance.delete(`/api/comments/${commentId}`);
     return { videoId, commentId }; // Return videoId and deleted commentId for reference
   }
 );
@@ -43,7 +42,7 @@ export const deleteComment = createAsyncThunk(
 export const updateComment = createAsyncThunk(
   'comments/updateComment',
   async ({ videoId, commentId, newComment }) => {
-    const response = await axios.put(`${BackendURL}/api/comments/${commentId}`, { newComment });
+    const response = await axiosInstance.put(`/api/comments/${commentId}`, { newComment });
     return { videoId, commentId, updatedComment: response.data.data }; // Return updated comment data
   }
 );

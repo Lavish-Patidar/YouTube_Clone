@@ -1,7 +1,6 @@
 // frontend/src/Redux/slice/videoSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import BackendURL from './Constant/ServerURL';
+import axiosInstance from './axiosConfig';
 
 /*
   **Initial State**
@@ -31,7 +30,7 @@ export const fetchAllVideos = createAsyncThunk(
   '/api/videos/allVideo',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BackendURL}/api/videos/allVideo`);
+      const response = await axiosInstance.get('/api/videos/allVideo');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -44,7 +43,7 @@ export const fetchAllUserVideos = createAsyncThunk(
   '/api/videos/allUserVideo',
   async (ownerId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BackendURL}/api/videos/allUserVideo/${ownerId}`);
+      const response = await axiosInstance.get(`/api/videos/allUserVideo/${ownerId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -57,7 +56,7 @@ export const fetchVideoById = createAsyncThunk(
   '/api/videos/videoData',
   async (videoId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BackendURL}/api/videos/videoData/${videoId}`);
+      const response = await axiosInstance.get(`/api/videos/videoData/${videoId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -70,7 +69,7 @@ export const publishVideo = createAsyncThunk(
   '/api/videos/publish',
   async (videoData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BackendURL}/api/videos/publish`, videoData, {
+      const response = await axiosInstance.post('/api/videos/publish', videoData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data.data;
@@ -85,7 +84,7 @@ export const deleteVideo = createAsyncThunk(
   '/api/videos/delete',
   async (videoId, { rejectWithValue }) => {
     try {
-      await axios.delete(`${BackendURL}/api/videos/delete/${videoId}`);
+      await axiosInstance.delete(`/api/videos/delete/${videoId}`);
       return videoId; // Return deleted video ID to update state
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -98,7 +97,7 @@ export const incrementView = createAsyncThunk(
   '/api/videos/incrementView',
   async (videoId, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${BackendURL}/api/videos/incrementView/${videoId}`);
+      const response = await axiosInstance.put(`/api/videos/incrementView/${videoId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -111,7 +110,7 @@ export const likeVideo = createAsyncThunk(
   'video/likeVideo',
   async ({ videoId, userId }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BackendURL}/api/videos/like`, { videoId, userId });
+      const response = await axiosInstance.post('/api/videos/like', { videoId, userId });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -124,7 +123,7 @@ export const removeLikeVideo = createAsyncThunk(
   'video/removeLikeVideo',
   async ({ videoId, userId }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BackendURL}/api/videos/removelike`, { videoId, userId });
+      const response = await axiosInstance.post('/api/videos/removelike', { videoId, userId });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -137,7 +136,7 @@ export const updateVideo = createAsyncThunk(
   '/api/videos/update',
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${BackendURL}/api/videos/update/${id}`, formData, {
+      const response = await axiosInstance.put(`/api/videos/update/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data.video;
