@@ -1,6 +1,6 @@
 //backend/routes/accountRoutes.js
 import { Router } from "express";
-import { deleteAccount, registerUser, login, updateAccount, logoutUser, getUserById} from "../controllers/accountController.js";
+import { deleteAccount, registerUser, login, updateAccount, logoutUser, getUserById } from "../controllers/accountController.js";
 import { upload } from "../middlewares/multerMiddleware.js"
 import { verifyJWT } from "../middlewares/authMiddleware.js";
 
