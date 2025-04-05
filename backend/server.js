@@ -39,11 +39,11 @@ app.use(cookieParser());
 
 
 // Route definitions
-app.use("/api/v1/account", userAccount);
-app.use("/api/v1/videos", videoRouter);
-app.use("/api/v1/channel", channelRouter)
-app.use('/api/v1/comments', commentsRouter);
-app.use('/api/v1/tags', tagsRouter);
+app.use("/api/account", userAccount);
+app.use("/api/videos", videoRouter);
+app.use("/api/channel", channelRouter)
+app.use('/api/comments', commentsRouter);
+app.use('/api/tags', tagsRouter);
 
 // Start the server after connecting to the database
 connectDB();

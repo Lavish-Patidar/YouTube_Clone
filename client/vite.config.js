@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api/v1': {
+      '/api': {
         target: 'https://you-tube-clone-sepia.vercel.app',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api\/v1/, '')
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }
