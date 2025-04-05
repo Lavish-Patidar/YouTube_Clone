@@ -67,14 +67,32 @@ export const fetchVideoById = createAsyncThunk(
 // Publish a new video
 export const publishVideo = createAsyncThunk(
   '/api/videos/publish',
-  async (videoData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/api/videos/publish', videoData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // Validate required fields
+      if (!formData.get('title') || !formData.get('videoFile')) {
+        throw new Error('Title and video file are required');
+      }
+
+      const response = await axiosInstance.post('/api/videos/publish', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          console.log(`Upload progress: ${percentCompleted}%`);
+        }
       });
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      console.error('Publish error:', error);
+      return rejectWithValue(
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to publish video'
+      );
     }
   }
 );
