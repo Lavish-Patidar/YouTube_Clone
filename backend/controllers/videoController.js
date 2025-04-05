@@ -12,22 +12,34 @@ import mongoose from "mongoose";
 // Upload and publish a new video
 export const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description, tags } = req.body;
-  const thumbnailFile = req.files?.thumbnail?.[0]; // Thumbnail file
-  const videoFile = req.files?.videoFile?.[0]; // Video file
 
-  // Check if required fields are provided
-  if (!title || !description || !thumbnailFile || !videoFile) {
-    throw new ApiError(400, "All fields are required, including thumbnail and video files");
+  if (!title || !description) {
+    throw new ApiError(400, "Title and description are required");
   }
 
-  // Upload files to Cloudinary
-  const [thumbnailFilePath, videoFilePath] = await Promise.all([
-    uploadOnCloudinary(thumbnailFile.path),
-    uploadOnCloudinary(videoFile.path),
-  ]);
+  if (!req.files?.thumbnail?.[0] || !req.files?.videoFile?.[0]) {
+    throw new ApiError(400, "Both thumbnail and video files are required");
+  }
 
-  if (!thumbnailFilePath || !videoFilePath) {
-    throw new ApiError(400, "File upload failed");
+  let thumbnailFilePath, videoFilePath;
+  try {
+    // Upload files to Cloudinary
+    [thumbnailFilePath, videoFilePath] = await Promise.all([
+      uploadOnCloudinary(req.files.thumbnail[0].path),
+      uploadOnCloudinary(req.files.videoFile[0].path)
+    ]);
+
+    if (!thumbnailFilePath?.url || !videoFilePath?.url) {
+      throw new ApiError(500, "Failed to upload files to Cloudinary");
+    }
+  } catch (error) {
+    // Clean up temp files if upload fails
+    [req.files.thumbnail?.[0]?.path, req.files.videoFile?.[0]?.path]
+      .filter(Boolean)
+      .forEach(filePath => {
+        try { fs.unlinkSync(filePath); } catch (e) { }
+      });
+    throw error;
   }
 
   // Handle tags - create tags if they don't exist
