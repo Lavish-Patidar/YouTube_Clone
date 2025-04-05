@@ -21,10 +21,17 @@ export const createChannel = createAsyncThunk(
     "channel/createChannel",
     async (channelData, { rejectWithValue }) => {
         try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                throw new Error("No access token found");
+            }
+
             const response = await axios.post(`${BackendURL}/api/channel/create`, channelData, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Attach authorization token
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
                 },
+                withCredentials: true
             });
             return response.data.channel; // Return channel data on success
         } catch (error) {

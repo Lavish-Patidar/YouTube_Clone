@@ -24,6 +24,7 @@ export const register = createAsyncThunk(
     async (userData, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${BackendURL}/api/account/signup`, userData);
+            localStorage.setItem('accessToken', response.data.data.accessToken);
             return response.data.data; // Return user data on success
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -40,6 +41,7 @@ export const login = createAsyncThunk(
     async (userData, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${BackendURL}/api/account/login`, userData);
+            localStorage.setItem('accessToken', response.data.data.accessToken);
             return response.data.data; // Return user data and access token on success
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -56,6 +58,7 @@ export const logout = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             await axios.post(`${BackendURL}/api/account/logout`);
+            localStorage.removeItem('accessToken');
             return true; // Successful logout returns true
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
