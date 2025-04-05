@@ -1,6 +1,9 @@
 // frontend/src/Redux/slice/authslice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import BackendURL from './Constant/ServerURL';
+
+
 
 // Initial state for authentication slice
 const initialState = {
@@ -20,7 +23,7 @@ export const register = createAsyncThunk(
     '/api/account/signup',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('/api/account/signup', userData);
+            const response = await axios.post(`${BackendURL}/api/account/signup`, userData);
             return response.data.data; // Return user data on success
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -36,7 +39,7 @@ export const login = createAsyncThunk(
     '/api/account/login',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('/api/account/login', userData);
+            const response = await axios.post(`${BackendURL}/api/account/login`, userData);
             return response.data.data; // Return user data and access token on success
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -52,7 +55,7 @@ export const logout = createAsyncThunk(
     '/api/account/logout',
     async (_, { rejectWithValue }) => {
         try {
-            await axios.post('/api/account/logout');
+            await axios.post(`${BackendURL}/api/account/logout`);
             return true; // Successful logout returns true
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -68,7 +71,7 @@ export const getUserData = createAsyncThunk(
     '/api/account/getUserData',
     async (userId, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`/api/account/userData/${userId}`);
+            const response = await axios.get(`${BackendURL}/api/account/userData/${userId}`);
             return response.data.data; // Return the user data
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -84,7 +87,7 @@ export const deleteAccount = createAsyncThunk(
     '/api/account/deleteAccount',
     async (userId, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`/api/account/delete/${userId}`);
+            const response = await axios.delete(`${BackendURL}/api/account/delete/${userId}`);
             return response.data.message; // Return success message
         } catch (error) {
             return rejectWithValue(error.response.data.message); // Return error message
@@ -100,7 +103,7 @@ export const updateAccount = createAsyncThunk(
     '/api/account/updateAccount',
     async ({ userId, formData }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`/api/account/update/${userId}`, formData, {
+            const response = await axios.put(`${BackendURL}/api/account/update/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Required for file uploads
                 },

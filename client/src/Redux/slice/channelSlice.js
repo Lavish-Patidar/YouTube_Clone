@@ -1,13 +1,14 @@
 // frontend/src/Redux/channelSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import BackendURL from "./Constant/ServerURL";
 
 // **Initial State**: Defines the initial values for the channel slice
 const initialState = {
-    channel: null,          
-    loading: false,         
-    error: null,            
-    successMessage: null,   
+    channel: null,
+    loading: false,
+    error: null,
+    successMessage: null,
 };
 
 // **Async Thunks: Handles API calls for channel-related operations**
@@ -20,7 +21,7 @@ export const createChannel = createAsyncThunk(
     "channel/createChannel",
     async (channelData, { rejectWithValue }) => {
         try {
-            const response = await axios.post("/api/v1/channel/create", channelData, {
+            const response = await axios.post(`${BackendURL}/api/channel/create`, channelData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Attach authorization token
                 },
@@ -40,7 +41,7 @@ export const getChannel = createAsyncThunk(
     "channel/data",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`/api/v1/channel/data/${channelId}`);
+            const response = await axios.get(`${BackendURL}/api/channel/data/${channelId}`);
             return response.data.data; // Return channel data on success
         } catch (error) {
             return rejectWithValue(error.response?.data?.error || "Failed to fetch channel data");
@@ -56,7 +57,7 @@ export const updateChannel = createAsyncThunk(
     "channel/updateChannel",
     async ({ channelId, formData }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`/api/v1/channel/update/${channelId}`, formData, {
+            const response = await axios.put(`${BackendURL}/api/channel/update/${channelId}`, formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                     "Content-Type": "multipart/form-data", // Required for file uploads
@@ -77,7 +78,7 @@ export const deleteChannel = createAsyncThunk(
     "channel/delete",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`/api/v1/channel/delete/${channelId}`, {
+            const response = await axios.delete(`${BackendURL}/api/channel/delete/${channelId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
@@ -97,7 +98,7 @@ export const subscribeChannel = createAsyncThunk(
     "channel/subscribe",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`/api/v1/channel/subscribe/${channelId}`, {
+            const response = await axios.post(`${BackendURL}/api/channel/subscribe/${channelId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
@@ -117,7 +118,7 @@ export const unsubscribeChannel = createAsyncThunk(
     "channel/unsubscribe",
     async (channelId, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`/api/v1/channel/unsubscribe/${channelId}`, {
+            const response = await axios.post(`${BackendURL}/api/channel/unsubscribe/${channelId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
@@ -131,8 +132,8 @@ export const unsubscribeChannel = createAsyncThunk(
 
 // **Slice Definition**
 const channelSlice = createSlice({
-    name: "channel", 
-    initialState,    
+    name: "channel",
+    initialState,
 
     // **Synchronous Reducers**
     reducers: {
@@ -151,9 +152,9 @@ const channelSlice = createSlice({
         // Handle createChannel actions
         builder
             .addCase(createChannel.pending, (state) => {
-                state.loading = true;          
-                state.error = null;            
-                state.successMessage = null;   
+                state.loading = true;
+                state.error = null;
+                state.successMessage = null;
             })
             .addCase(createChannel.fulfilled, (state, action) => {
                 state.loading = false;
